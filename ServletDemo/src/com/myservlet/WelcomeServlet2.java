@@ -1,6 +1,7 @@
 package com.myservlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,23 +10,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.myservice.WelcomeService;
+
 /**
  * Servlet implementation class WelcomeServlet
- * Here this class is the old way of creating a servlet class 
- * and this servlet class has a call to jsp page which has a business logic 
- * to display the required data.
- * Internally Tomcat server is called from this servlet and this servlet
- * call the jsp page which is again a dynamic servlet called to run the java code
- * and display required message.
+ * Here this class is the we move the business logic to a Service class
+ * from where the business logic is read based on the request.
+ * The response msg is then displayed 
+ * in the JSP page using JSTL(Java Server pages standard tag Library).
  */
-@WebServlet("/WelcomeServlet")
-public class WelcomeServlet extends HttpServlet {
+@WebServlet("/WelcomeServlet2")
+public class WelcomeServlet2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public WelcomeServlet() {
+    public WelcomeServlet2() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,11 +37,12 @@ public class WelcomeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		//Create Data model and add it to the request attribute
-		String[] messages = {"Welcome", "Hello", "Hi"};
-		request.setAttribute("Welcome", messages);
+		WelcomeService welcomeService = new WelcomeService();
+		List<String> msgs = welcomeService.getMessages("Ganesh");
+		request.setAttribute("Welcome", msgs);
 		
 		//2.Retrieve the request dispatcher
-		RequestDispatcher requestDispatcher = request.getRequestDispatcher("welcome.jsp");
+		RequestDispatcher requestDispatcher = request.getRequestDispatcher("welcome2.jsp");
 		
 		//3. Forward the request to the view
 		requestDispatcher.forward(request, response);
